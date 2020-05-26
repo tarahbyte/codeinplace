@@ -1,0 +1,72 @@
+from simpleimage import SimpleImage
+
+MIN_MILES = 300
+MAX_MILES = 500
+
+FILE_NAME = 'workouts.txt'
+SHOE_PIC = 'sneakers.png'
+UNACCOUNTED_WALKING = .2
+
+
+def main():
+    # show image of new shoes
+    print("Two years later...")
+    print("Do my shoes need replacing?")
+    image = SimpleImage(SHOE_PIC)
+    image.show()
+
+    # program pulls data from txt file
+    total_miles = completed_miles()
+    round(total_miles, 2)
+    print("You've completed", total_miles, "miles to date!")
+
+    # print sum of list & add 20% buffer
+    total_miles = added_miles(total_miles)
+
+    # change picture color depending on miles walked
+    replace_shoes(total_miles)
+
+
+def completed_miles():
+    miles = []
+    file_object = open("workouts.txt", "r")
+    miles = file_object.readlines()
+    total_miles = 0
+    for line in miles:
+        conv_float = float(line)
+        total_miles = int(total_miles + conv_float)
+    file_object.close()
+    return total_miles
+
+
+def added_miles(total_miles):
+    total = float((total_miles * UNACCOUNTED_WALKING) + total_miles)
+    print(total_miles, "miles plus 20% buffer for any walks I forgot to record", total, "miles...")
+    return total
+
+
+def replace_shoes(total):
+    image = SimpleImage(SHOE_PIC)
+    if total <= MIN_MILES:
+        for pixel in image:
+            pixel.red = pixel.red * 0.7
+            pixel.green = pixel.green * 1.5
+            pixel.blue = pixel.blue * 0.7
+        print("shoes are still looking good")
+    elif MIN_MILES < total <= MAX_MILES:
+        for pixel in image:
+            pixel.red = pixel.red * 1.5
+            pixel.green = pixel.green * 1.5
+            pixel.blue = pixel.blue * 0.7
+        print("time to start looking for a new pair")
+    elif total > MAX_MILES:
+        for pixel in image:
+            pixel.red = pixel.red * 1.5
+            pixel.green = pixel.green * 0.7
+            pixel.blue = pixel.blue * 1.0
+        print("time to retire those sneakers")
+    image.show()
+
+
+if __name__ == '__main__':
+    main()
